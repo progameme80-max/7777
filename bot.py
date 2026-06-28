@@ -33,7 +33,7 @@ def keep_alive():
 keep_alive()
 
 # ==================== KONFIGÜRASYON ====================
-TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.getenv('TOKEN')
 SAHI_IDSI = int(os.getenv('BOT_OWNER_ID', '0'))
 API_BASE_URL = os.getenv('API_BASE_URL', 'https://arastir.vip/api')
 
