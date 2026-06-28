@@ -653,19 +653,21 @@ async def on_interaction(interaction: discord.Interaction):
     if interaction.type != discord.InteractionType.component:
         return
     
+    try:
+        await interaction.response.defer(ephemeral=True)
+    except:
+        pass
+    
     custom_id = interaction.data.get("custom_id")
     key = key_manager.get_user_key(interaction.user.id)
     
     if not key:
-        await interaction.response.send_message(
-            "🔑 Önce key'ini girmelisin! `!menu KEY` yaz.",
-            ephemeral=True
-        )
+        await interaction.followup.send("🔑 Önce key'ini girmelisin! `!menu KEY` yaz.", ephemeral=True)
         return
     
     valid, msg, kalan = key_manager.validate_key(key, interaction.user.id)
     if not valid:
-        await interaction.response.send_message(msg, ephemeral=True)
+        await interaction.followup.send(msg, ephemeral=True)
         return
     
     modals = {
@@ -685,7 +687,10 @@ async def on_interaction(interaction: discord.Interaction):
     
     if custom_id in modals:
         title, sorgu_tipi, fields, sorgu_adi = modals[custom_id]
-        await interaction.response.send_modal(SorguModal(title, sorgu_tipi, fields, key, sorgu_adi))
+        try:
+            await interaction.response.send_modal(SorguModal(title, sorgu_tipi, fields, key, sorgu_adi))
+        except:
+            await interaction.followup.send("Modal açılamadı, tekrar dene!", ephemeral=True)
 
 # ==================== BOTU BAŞLAT ====================
 if __name__ == "__main__":
