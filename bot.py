@@ -349,14 +349,15 @@ class SorguModal(Modal):
                 max_length=field.get("max_length", 100)
             )
             self.add_item(item)
+async def on_submit(self, interaction: discord.Interaction):
+    await interaction.response.defer(ephemeral=True)
     
-    async def on_submit(self, interaction: discord.Interaction):
-        valid, msg, kalan = key_manager.validate_key(self.key, interaction.user.id)
-        if not valid:
-            await interaction.response.send_message(msg, ephemeral=True)
-            return
-        
-        await interaction.response.send_message(f"🔍 Sorgulanıyor... {msg}", ephemeral=True)
+    valid, msg, kalan = key_manager.validate_key(self.key, interaction.user.id)
+    if not valid:
+        await interaction.followup.send(msg, ephemeral=True)
+        return
+    
+    await interaction.followup.send(f"🔍 Sorgulanıyor... {msg}", ephemeral=True)
         values = [item.value for item in self.children]
         aranan = values[0] if values else "Bilinmiyor"
         
